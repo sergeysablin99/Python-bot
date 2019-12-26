@@ -2,18 +2,20 @@ from setuptools import setup
 
 requirements = [
     # TODO: put package requirements here
+    'requests'
 ]
 
 test_requirements = [
     # TODO: put package test requirements here
+    'requests'
 ]
 
 setup(
     name='Python-bot',
     version='0.1.0',
-    description="Bot to notify you about plans via VK",
-    long_description=readme + '\n\n' + history,
-    author="Leonardo Giordani",
+    description='Bot to notify you about plans via VK',
+    long_description="readme + '\n\n' + history",
+    author="Sergey Sablin",
     author_email='serewkasablin@outlook.com',
     url='https://github.com/notification-bot/Python-bot',
     packages=[
