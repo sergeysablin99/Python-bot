@@ -2,7 +2,6 @@ import json
 
 class User:
     events = dict()
-    data_dir = ''
 
     def __init__(self, events=None):
         if events is None:
@@ -15,6 +14,7 @@ class User:
 
 class UserList:
     all_users = dict()  # Contains dict(user_id, User)
+    data_dir = ''
 
     def __init__(self, data_dir="./data/base.json"):
         self.data_dir = data_dir
