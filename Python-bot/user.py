@@ -2,6 +2,7 @@ import json
 
 class User:
     events = dict()
+    data_dir = ''
 
     def __init__(self, events=None):
         if events is None:
@@ -16,6 +17,7 @@ class UserList:
     all_users = dict()  # Contains dict(user_id, User)
 
     def __init__(self, data_dir="./data/base.json"):
+        self.data_dir = data_dir
         f = open(data_dir, 'r')
         for key, value in json.loads(f.read()).items():
             self.all_users[key] = User(value)
@@ -28,6 +30,9 @@ class UserList:
             self.all_users[user_id] = user_events
         else:
             self.all_users[user_id] = {**self.all_users[user_id], **user_events}
-        print(self.all_users.keys())
+        self.update_file()
 
-s = UserList()
+    def update_file(self):
+        f = open(self.data_dir, 'w')
+        f.write(json.dumps(self.all_users))
+        f.close()
