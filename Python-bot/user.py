@@ -1,3 +1,4 @@
+import ast
 import json
 
 
@@ -20,8 +21,9 @@ class UserList:
     def __init__(self, data_dir="./data/base.json"):
         self.data_dir = data_dir
         f = open(data_dir, 'r')
-        for key, value in json.loads(f.read()).items():
-            self.all_users[key] = User(value)
+        if f.seek(0, 0):
+            for key, value in json.loads(f.read()).items():
+                self.all_users[key] = User(value)
         f.close()
 
     def add_rec(self, user_id, user_events=None):
@@ -34,6 +36,22 @@ class UserList:
         self.update_file()
 
     def update_file(self):
+        f = open(self.data_dir, 'r')
+        old_users = f.read()
+        if old_users:
+            old_users = ast.literal_eval(old_users)
+        else:
+            old_users = dict()
+        f.close()
+        new_users = self.all_users
+        for user in old_users:
+            if user not in self.all_users:
+                new_users[user] = old_users[user]
+            else:
+                # new_users[user] = dict(old_users[user]).update(dict(self.all_users[user]))
+                new_users[user] = {**old_users[user], **self.all_users[user]}
+                print(new_users)
         f = open(self.data_dir, 'w')
-        f.write(json.dumps(self.all_users))
+        if not new_users == {}:
+            f.write(json.dumps(new_users))
         f.close()
