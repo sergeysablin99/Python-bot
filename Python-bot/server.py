@@ -1,8 +1,7 @@
 import requests
 import json
-import random
-import datetime
 from user import UserList
+
 
 class Server:
     group_id = 191177272
@@ -12,16 +11,18 @@ class Server:
     data = UserList()
 
     def __init__(self):
-        Server.getLongPollServer(self)
+        self.server = str()
+        self.key = str()
+        self.ts = str()
+        Server.get_long_poll_server(self)
 
-    def getLongPollServer(self):
+    def get_long_poll_server(self):
         method = 'groups.getLongPollServer?group_id=191177272'
         reply = requests.get("&".join([Server.body + method, Server.v, Server.access_token]))
         data = json.loads(reply.text)
         self.server = data['response']['server']
         self.key = data['response']['key']
         self.ts = data['response']['ts']
-        # print(self.server, self.key, self.ts)
 
     def simple_request(self):
         method = self.server + '?act=a_check&key=' + self.key + '&ts=' + self.ts + "&wait=25"
@@ -29,18 +30,28 @@ class Server:
 
     def simple_loop(self):
         reply = json.loads(self.simple_request().text)
+        if 'failed' in reply:
+            if reply['failed'] == 1:
+                self.ts = reply['ts']
+            else:
+                self.get_long_poll_server()
+                self.simple_loop()
         self.ts = reply['ts']
-        # print(json.dumps(reply, indent='\t'))
         if reply['updates']:
             message = reply['updates'][0]['object']['message']['text']
             user_id = reply['updates'][0]['object']['message']['from_id']
-            self.data.add_rec(str(user_id), {datetime.datetime.now().isoformat('|'): message})
-            random_id = random.randint(0, 100)
-            method = 'messages.send?' + 'user_id=' + str(user_id) + '&random_id=' + str(random_id) \
-                     + '&message=' + message
-            r = requests.get("&".join([Server.body + method, Server.v, Server.access_token]))
-            print("&".join([Server.body + method, Server.v, Server.access_token]))
+            date, message = self.parse_message(message)
+            self.data.add_rec(str(user_id), {date: message})
+            self.notify()
         self.simple_loop()
+
+    # шаблон функции парсинга
+    def parse_message(self, message):
+        return 42, 42
+
+    # Шаблон функции напоминания
+    def notify(self):
+        print(42)
 
 
 server = Server()
