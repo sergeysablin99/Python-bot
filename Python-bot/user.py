@@ -1,18 +1,6 @@
 import json
 
 
-class User:
-    events = dict()
-
-    def __init__(self, events=None):
-        if events is None:
-            events = {}
-        self.events = events
-
-    def get_event(self, date):
-        return self.events.get(date)
-
-
 class UserList:
     all_users = dict()  # Contains dict(user_id, User)
     data_dir = ''
@@ -21,7 +9,7 @@ class UserList:
         self.data_dir = data_dir
         f = open(data_dir, 'r')
         for key, value in json.loads(f.read()).items():
-            self.all_users[key] = User(value)
+            self.all_users[key] = value
         f.close()
 
     def add_rec(self, user_id, user_events=None):
