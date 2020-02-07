@@ -1,6 +1,7 @@
 import requests
 import json
 import datetime
+import os
 import re
 from user import UserList
 
@@ -46,6 +47,12 @@ class Server:
                 message = 'Не могу разобрать команду'
                 date = datetime.datetime.now().isoformat('|')
             user_id = reply['updates'][0]['object']['message']['from_id']
+            if message != 'Не могу разобрать команду':
+                catalog = os.system('pwd')
+                if str(catalog).endswith('/parsing'):
+                    os.system('tomita-parser config.proto')
+                else:
+                    os.system('cd parsing/ && tomita-parser config.proto')
             self.data.add_rec(str(user_id), {date: message})
         self.simple_loop()
 
