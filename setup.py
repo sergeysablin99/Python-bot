@@ -2,7 +2,8 @@ from setuptools import setup
 
 requirements = [
     # TODO: put package requirements here
-    'requests'
+    'requests',
+    'datetime'
 ]
 
 test_requirements = [
